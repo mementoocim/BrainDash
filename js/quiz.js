@@ -79,7 +79,7 @@ const QuizGame = {
     if (this.onUpdate) {
       this.onUpdate({
         questionIndex: this.questionIndex,
-        total: this.QUESTIONS_PER_ROUND,
+        total: this.questions.length,
         score: this.score,
         lives: this.lives,
         maxLives: this.MAX_LIVES,
@@ -123,7 +123,7 @@ const QuizGame = {
   },
 
   showCurrentQuestion() {
-    if (this.questionIndex >= this.QUESTIONS_PER_ROUND || this.lives <= 0) {
+    if (this.questionIndex >= this.questions.length || this.lives <= 0) {
       this.finishRound();
       return;
     }
@@ -225,7 +225,7 @@ const QuizGame = {
       return;
     }
 
-    if (this.questionIndex >= this.QUESTIONS_PER_ROUND) {
+    if (this.questionIndex >= this.questions.length) {
       this.finishRound(true);
       return;
     }
@@ -236,7 +236,7 @@ const QuizGame = {
   finishRound(won = null) {
     this.clearTimer();
     const didWin =
-      won ?? (this.lives > 0 && this.questionIndex >= this.QUESTIONS_PER_ROUND);
+      won ?? (this.lives > 0 && this.questionIndex >= this.questions.length);
 
     Storage.clearGameState();
     Storage.incrementRoundsPlayed();
@@ -275,7 +275,7 @@ const QuizGame = {
       if (Storage.unlockAchievement('perfect')) earned.push('perfect');
     }
 
-    if (this.answerHistory.length === this.QUESTIONS_PER_ROUND) {
+    if (this.answerHistory.length === this.questions.length) {
       const allFast = this.answerHistory.every((a) => a.timeLeft >= 10);
       if (allFast && won) {
         if (Storage.unlockAchievement('speed_demon')) earned.push('speed_demon');

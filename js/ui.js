@@ -112,6 +112,8 @@ const UI = {
 
   updateHud({ questionIndex, total, score, lives, maxLives }) {
     this.els.quizProgress.textContent = String(questionIndex + 1);
+    const totalEl = document.getElementById('quiz-total');
+    if (totalEl) totalEl.textContent = String(total);
     this.els.quizScore.textContent = String(score);
     const hearts = '♥'.repeat(lives) + '♡'.repeat(Math.max(0, maxLives - lives));
     this.els.quizLives.textContent = hearts;
