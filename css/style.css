@@ -1708,16 +1708,17 @@ body.body--landing .app {
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: clamp(44px, 9vw, 52px);
-  padding: var(--sp-3) var(--sp-4);
+  min-height: clamp(50px, 10vw, 64px);
+  padding: var(--sp-4) var(--sp-6);
   margin-top: var(--sp-3);
   border: 1px solid var(--amber);
-  border-radius: var(--radius);
+  border-radius: var(--radius-pill);
   background: var(--amber-soft);
   color: var(--amber);
-  font-family: var(--font-body);
-  font-size: clamp(0.88rem, 2vw + 0.2rem, 1rem);
-  font-weight: 600;
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 2.5vw + 0.2rem, 1.15rem);
+  font-weight: 800;
+  letter-spacing: 0.02em;
   cursor: pointer;
   transition:
     background var(--duration-normal),
@@ -1746,20 +1747,22 @@ body.body--landing .app {
   align-items: center;
   justify-content: center;
   width: 100%;
-  min-height: clamp(40px, 8vw, 48px);
-  padding: var(--sp-2) var(--sp-4);
+  min-height: clamp(50px, 10vw, 64px);
+  padding: var(--sp-4) var(--sp-6);
   margin-top: var(--sp-2);
   border: 1px solid var(--glass-border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-pill);
   background: transparent;
   color: var(--text-secondary);
-  font-family: var(--font-body);
-  font-size: clamp(0.82rem, 1.8vw + 0.15rem, 0.92rem);
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 2.5vw + 0.2rem, 1.15rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
   cursor: pointer;
   transition:
     color var(--duration-fast),
-    border-color var(--duration-fast);
+    border-color var(--duration-fast),
+    background var(--duration-fast);
 }
 
 .btn-achievements-link:hover {
