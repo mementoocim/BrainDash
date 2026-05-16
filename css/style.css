@@ -1694,10 +1694,12 @@ body.body--landing .app {
 }
 
 .btn-sm {
-  min-height: 36px;
+  flex: 1;
+  min-height: clamp(40px, 8vw, 48px);
   padding: var(--sp-2) var(--sp-4);
-  font-size: clamp(0.78rem, 1.5vw + 0.15rem, 0.88rem);
+  font-size: clamp(0.82rem, 1.8vw + 0.15rem, 0.92rem);
   width: auto;
+  border-radius: var(--radius);
 }
 
 /* ============================================================
