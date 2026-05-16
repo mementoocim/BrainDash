@@ -1,0 +1,79 @@
+{
+  "questions": [
+    {
+      "question": "What does HTML stand for?",
+      "choices": [
+        "Hyper Text Markup Language",
+        "High Tech Modern Language",
+        "Home Tool Markup Language",
+        "Hyperlink Text Management Language"
+      ],
+      "correctIndex": 0,
+      "category": "Computers"
+    },
+    {
+      "question": "Which planet is known as the Red Planet?",
+      "choices": ["Venus", "Mars", "Jupiter", "Saturn"],
+      "correctIndex": 1,
+      "category": "Science"
+    },
+    {
+      "question": "What is the capital of the Philippines?",
+      "choices": ["Cebu", "Davao", "Manila", "Quezon City"],
+      "correctIndex": 2,
+      "category": "Geography"
+    },
+    {
+      "question": "How many sides does a hexagon have?",
+      "choices": ["5", "6", "7", "8"],
+      "correctIndex": 1,
+      "category": "Mathematics"
+    },
+    {
+      "question": "Which gas do plants absorb from the atmosphere?",
+      "choices": ["Oxygen", "Nitrogen", "Carbon Dioxide", "Hydrogen"],
+      "correctIndex": 2,
+      "category": "Science"
+    },
+    {
+      "question": "What year did World War II end?",
+      "choices": ["1943", "1944", "1945", "1946"],
+      "correctIndex": 2,
+      "category": "History"
+    },
+    {
+      "question": "Which device is used to input text into a computer?",
+      "choices": ["Monitor", "Keyboard", "Speaker", "Printer"],
+      "correctIndex": 1,
+      "category": "Computers"
+    },
+    {
+      "question": "What is H2O commonly known as?",
+      "choices": ["Salt", "Water", "Oxygen", "Hydrogen"],
+      "correctIndex": 1,
+      "category": "Science"
+    },
+    {
+      "question": "Who painted the Mona Lisa?",
+      "choices": [
+        "Vincent van Gogh",
+        "Pablo Picasso",
+        "Leonardo da Vinci",
+        "Michelangelo"
+      ],
+      "correctIndex": 2,
+      "category": "Art"
+    },
+    {
+      "question": "What is the largest ocean on Earth?",
+      "choices": [
+        "Atlantic Ocean",
+        "Indian Ocean",
+        "Arctic Ocean",
+        "Pacific Ocean"
+      ],
+      "correctIndex": 3,
+      "category": "Geography"
+    }
+  ]
+}
