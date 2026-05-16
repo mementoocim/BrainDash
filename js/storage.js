@@ -2,6 +2,9 @@ const StorageKeys = {
   BEST: 'brainDash_best',
   SOUND: 'brainDash_sound',
   DIFFICULTY: 'brainDash_difficulty',
+  GAME_STATE: 'brainDash_gameState',
+  ACHIEVEMENTS: 'brainDash_achievements',
+  DAILY_DONE: 'brainDash_dailyDone',
 };
 
 const DIFFICULTY_CONFIG = {
@@ -24,6 +27,17 @@ const DIFFICULTY_CONFIG = {
     hint: '12 sec per question · 1.5× score bonus',
   },
 };
+
+const ACHIEVEMENT_DEFS = [
+  { id: 'perfect', name: 'Perfect Round', icon: '🏆', desc: 'Complete a round without losing any lives' },
+  { id: 'speed_demon', name: 'Speed Demon', icon: '⚡', desc: 'Answer all questions with 10+ seconds remaining' },
+  { id: 'streak_master', name: 'Streak Master', icon: '🔥', desc: 'Get a 10-answer streak in a single round' },
+  { id: 'daily_warrior', name: 'Daily Warrior', icon: '📅', desc: 'Complete 7 daily challenges' },
+  { id: 'scholar', name: 'Scholar', icon: '📚', desc: 'Play all 4 categories' },
+  { id: 'hard_winner', name: 'Unstoppable', icon: '💎', desc: 'Win a round on Hard difficulty' },
+  { id: 'high_scorer', name: 'High Scorer', icon: '⭐', desc: 'Score 2000+ points in a single round' },
+  { id: 'centurion', name: 'Centurion', icon: '🛡️', desc: 'Play 100 total rounds' },
+];
 
 const Storage = {
   getBestScore() {
@@ -65,5 +79,92 @@ const Storage = {
 
   getDifficultyConfig(level) {
     return DIFFICULTY_CONFIG[level] || DIFFICULTY_CONFIG.easy;
+  },
+
+  saveGameState(state) {
+    try {
+      localStorage.setItem(StorageKeys.GAME_STATE, JSON.stringify(state));
+    } catch { /* quota exceeded */ }
+  },
+
+  getGameState() {
+    try {
+      const raw = localStorage.getItem(StorageKeys.GAME_STATE);
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  },
+
+  clearGameState() {
+    localStorage.removeItem(StorageKeys.GAME_STATE);
+  },
+
+  getAchievements() {
+    try {
+      const raw = localStorage.getItem(StorageKeys.ACHIEVEMENTS);
+      return raw ? JSON.parse(raw) : {};
+    } catch {
+      return {};
+    }
+  },
+
+  unlockAchievement(id) {
+    const ach = this.getAchievements();
+    if (ach[id]) return false;
+    ach[id] = Date.now();
+    localStorage.setItem(StorageKeys.ACHIEVEMENTS, JSON.stringify(ach));
+    return true;
+  },
+
+  getDailyDone() {
+    try {
+      const raw = localStorage.getItem(StorageKeys.DAILY_DONE);
+      return raw ? JSON.parse(raw) : { date: null, streak: 0 };
+    } catch {
+      return { date: null, streak: 0 };
+    }
+  },
+
+  setDailyDone(dateStr) {
+    const data = this.getDailyDone();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yStr = yesterday.toISOString().slice(0, 10);
+
+    if (data.date === yStr) {
+      data.streak += 1;
+    } else if (data.date !== dateStr) {
+      data.streak = 1;
+    }
+    data.date = dateStr;
+    localStorage.setItem(StorageKeys.DAILY_DONE, JSON.stringify(data));
+    return data.streak;
+  },
+
+  incrementRoundsPlayed() {
+    const key = 'brainDash_roundsPlayed';
+    const val = Number(localStorage.getItem(key)) || 0;
+    localStorage.setItem(key, String(val + 1));
+    return val + 1;
+  },
+
+  getRoundsPlayed() {
+    return Number(localStorage.getItem('brainDash_roundsPlayed')) || 0;
+  },
+
+  trackCategoryPlayed(categoryId) {
+    const key = 'brainDash_categoriesPlayed';
+    try {
+      const raw = localStorage.getItem(key);
+      const arr = raw ? JSON.parse(raw) : [];
+      if (!arr.includes(categoryId)) {
+        arr.push(categoryId);
+        localStorage.setItem(key, JSON.stringify(arr));
+      }
+      return arr;
+    } catch {
+      return [];
+    }
   },
 };

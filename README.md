@@ -35,6 +35,12 @@ A browser-based multiple-choice trivia quiz game with a "Cosmic Ember" dark-them
 - Offline fallback — 10 built-in questions when the API is unreachable
 - Synthesized sound effects via Web Audio API (no audio files needed)
 - Persistent best score saved in `localStorage`
+- **Progress Persistence** — save and resume interrupted games automatically
+- **Question Review** — review all answers after a round to learn from mistakes
+- **Daily Challenge** — date-seeded single question with streak tracking
+- **Achievements / Badges** — 8 unlockable achievements (Perfect Round, Speed Demon, etc.)
+- **Confetti & Shake Animations** — visual feedback for correct and wrong answers
+- **Sound Variety** — different waveforms (sine, sawtooth, triangle, square) for various events
 - Fully responsive design — mobile (320px) through ultrawide (1920px+)
 - Glass-morphism dark theme with animated backgrounds
 - Accessibility support — reduced motion, high contrast, ARIA attributes
@@ -203,7 +209,12 @@ storage.js → api.js → ui.js → quiz.js → app.js
 Sound effects are synthesized in real-time using the Web Audio API — no audio files required:
 
 - **Correct answer:** 880Hz sine wave (0.08 seconds)
-- **Wrong answer:** 220Hz sine wave (0.12 seconds)
+- **Wrong answer:** 220Hz sawtooth wave (0.12 seconds)
+- **Streak bonus:** 1047Hz triangle wave (0.15 seconds, every 3rd streak)
+- **Timer warning:** 440Hz square wave (0.05 seconds, last 3 seconds)
+- **Round won:** 3-note ascending chord (C5–E5–G5 sine waves)
+- **Round lost:** 2-note descending sawtooth (A3–G3)
+- **Daily challenge won:** 1047Hz triangle wave (0.3 seconds)
 
 ---
 

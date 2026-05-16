@@ -68,9 +68,23 @@
           Best score <strong id="menu-best-score">0</strong>
         </p>
 
+        <div id="resume-banner" class="resume-banner" hidden>
+          <p class="resume-text">You have a saved game in progress!</p>
+          <div class="resume-actions">
+            <button type="button" id="btn-resume" class="btn-primary btn-sm">Resume</button>
+            <button type="button" id="btn-dismiss-resume" class="btn-secondary btn-sm">Dismiss</button>
+          </div>
+        </div>
+
         <div class="landing-cta">
           <button type="button" id="btn-start-playing" class="btn-start">
             Start playing
+          </button>
+          <button type="button" id="btn-daily" class="btn-daily">
+            📅 Daily Challenge <span id="daily-streak" class="daily-streak"></span>
+          </button>
+          <button type="button" id="btn-achievements-main" class="btn-achievements-link">
+            🏆 Achievements
           </button>
         </div>
       </div>
@@ -161,11 +175,43 @@
         <p class="overlay-stat">Best <strong id="final-best">0</strong></p>
         <p id="gameover-message" class="overlay-message"></p>
         <button type="button" id="btn-play-again" class="btn-primary">Play Again</button>
+        <button type="button" id="btn-review" class="btn-secondary">Review Answers</button>
         <button type="button" id="btn-back-menu" class="btn-secondary">Main Menu</button>
       </div>
     </section>
 
+    <section id="screen-review" class="screen" aria-label="Answer review" hidden>
+      <div class="glass-card review-card">
+        <button type="button" id="btn-review-back" class="btn-back" aria-label="Back to results">
+          ← Back
+        </button>
+        <h2 class="review-title">Answer Review</h2>
+        <p id="review-summary" class="review-summary"></p>
+        <div id="review-list" class="review-list"></div>
+      </div>
+    </section>
+
+    <section id="screen-achievements" class="screen" aria-label="Achievements" hidden>
+      <div class="glass-card achievements-card">
+        <button type="button" id="btn-achievements-back" class="btn-back" aria-label="Back to menu">
+          ← Back
+        </button>
+        <h2 class="achievements-title">Achievements</h2>
+        <div id="achievement-list" class="achievement-list"></div>
+      </div>
+    </section>
+
     <div id="feedback-flash" class="feedback-flash" hidden aria-live="polite"></div>
+
+    <canvas id="confetti-canvas" class="confetti-canvas" aria-hidden="true"></canvas>
+
+    <div id="achievement-toast" class="achievement-toast" aria-live="polite">
+      <span class="achievement-toast__icon">🏆</span>
+      <div class="achievement-toast__body">
+        <span class="achievement-toast__label">Achievement Unlocked!</span>
+        <span class="achievement-toast__name"></span>
+      </div>
+    </div>
   </div>
 
   <script src="js/storage.js"></script>

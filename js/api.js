@@ -46,6 +46,25 @@ const OpenTDB = {
     return arr;
   },
 
+  seededShuffle(array, seed) {
+    const arr = [...array];
+    let s = seed;
+    for (let i = arr.length - 1; i > 0; i -= 1) {
+      s = (s * 16807 + 0) % 2147483647;
+      const j = s % (i + 1);
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  },
+
+  dateSeed(dateStr) {
+    let hash = 0;
+    for (let i = 0; i < dateStr.length; i++) {
+      hash = ((hash << 5) - hash + dateStr.charCodeAt(i)) | 0;
+    }
+    return Math.abs(hash);
+  },
+
   normalizeQuestion(item) {
     const question = this.decode(item.question);
     const correct = this.decode(item.correct_answer);
@@ -108,6 +127,43 @@ const OpenTDB = {
       category: q.category || 'General',
       difficulty,
     }));
+  },
+
+  async fetchDailyQuestion() {
+    const today = new Date().toISOString().slice(0, 10);
+    const seed = this.dateSeed(today);
+
+    try {
+      const catIds = this.CURATED_IDS;
+      const catIndex = seed % catIds.length;
+      const catId = catIds[catIndex];
+
+      const questions = await this.fetchQuestions({
+        categoryId: catId,
+        amount: 1,
+        difficulty: 'medium',
+      });
+
+      if (questions.length > 0) {
+        const q = questions[0];
+        return {
+          questions: [q],
+          offline: false,
+          categoryName: `Daily Challenge — ${q.category}`,
+          isDaily: true,
+        };
+      }
+    } catch { /* fall through */ }
+
+    const fallback = await this.fetchFallback('medium');
+    const index = seed % fallback.length;
+    const q = fallback[index];
+    return {
+      questions: [q],
+      offline: true,
+      categoryName: `Daily Challenge — ${q.category}`,
+      isDaily: true,
+    };
   },
 
   async loadRound(categoryId, categoryName, difficulty = 'easy') {

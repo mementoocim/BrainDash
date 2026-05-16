@@ -12,6 +12,8 @@ const App = {
     this.refreshMenu();
     this.loadCategories();
     OpenTDB.requestToken();
+    this.checkResume();
+    this.updateDailyStreak();
   },
 
   getDifficulty() {
@@ -61,10 +63,99 @@ const App = {
       UI.showScreen('menu');
     });
 
+    document.getElementById('btn-daily').addEventListener('click', () => {
+      this.startDailyChallenge();
+    });
+
+    if (UI.els.btnResume) {
+      UI.els.btnResume.addEventListener('click', () => this.resumeGame());
+    }
+    if (UI.els.btnDismissResume) {
+      UI.els.btnDismissResume.addEventListener('click', () => {
+        Storage.clearGameState();
+        UI.showResumeBanner(false);
+      });
+    }
+    if (UI.els.btnReview) {
+      UI.els.btnReview.addEventListener('click', () => {
+        if (this._lastAnswerHistory) {
+          UI.renderReview(this._lastAnswerHistory, this._lastScore, this._lastMaxStreak);
+        }
+      });
+    }
+    if (UI.els.btnReviewBack) {
+      UI.els.btnReviewBack.addEventListener('click', () => UI.showScreen('gameover'));
+    }
+    if (UI.els.btnAchievements) {
+      UI.els.btnAchievements.addEventListener('click', () => UI.renderAchievements());
+    }
+    if (UI.els.btnAchievementsBack) {
+      UI.els.btnAchievementsBack.addEventListener('click', () => {
+        this.setLandingMode(true);
+        this.showBrowseScreen();
+        UI.showScreen('menu');
+      });
+    }
+
+    const btnAchMain = document.getElementById('btn-achievements-main');
+    if (btnAchMain) {
+      btnAchMain.addEventListener('click', () => UI.renderAchievements());
+    }
+
     UI.els.soundToggle.checked = Storage.getSoundEnabled();
     UI.els.soundToggle.addEventListener('change', (e) => {
       Storage.setSoundEnabled(e.target.checked);
     });
+  },
+
+  checkResume() {
+    const saved = Storage.getGameState();
+    if (saved && saved.questionIndex < saved.questions.length && saved.lives > 0) {
+      UI.showResumeBanner(true);
+    }
+  },
+
+  resumeGame() {
+    const saved = Storage.getGameState();
+    if (!saved) return;
+
+    UI.showResumeBanner(false);
+    const config = Storage.getDifficultyConfig(saved.difficulty);
+
+    this.lastCategoryId = saved.categoryId;
+    this.lastCategoryName = saved.categoryName;
+    this.lastRenderedIndex = -1;
+
+    QuizGame.destroy();
+    this.setLandingMode(false);
+    UI.setLoadingMeta({ categoryName: saved.categoryName, difficulty: saved.difficulty });
+    UI.showScreen('loading');
+
+    UI.showScreen('quiz');
+    UI.setQuizMeta({
+      categoryName: saved.categoryName,
+      difficulty: saved.difficulty,
+      offline: saved.offline,
+    });
+
+    QuizGame.start({
+      questions: saved.questions,
+      categoryId: saved.categoryId,
+      categoryName: saved.categoryName,
+      offline: saved.offline,
+      difficulty: saved.difficulty,
+      timerSeconds: config.timer,
+      scoreMultiplier: config.scoreMultiplier,
+      savedState: saved,
+      onUpdate: (state) => this.onQuizUpdate(state),
+      onEnd: (result) => this.onQuizEnd(result),
+      onTimeout: (result) => this.processResult(result),
+    });
+  },
+
+  updateDailyStreak() {
+    const daily = Storage.getDailyDone();
+    UI.updateDailyStreak(daily.streak);
   },
 
   showBrowseScreen() {
@@ -118,6 +209,7 @@ const App = {
     this.lastRenderedIndex = -1;
 
     QuizGame.destroy();
+    Storage.clearGameState();
     this.setLandingMode(false);
     UI.setLoadingMeta({ categoryName, difficulty });
     UI.showScreen('loading');
@@ -139,6 +231,40 @@ const App = {
       difficulty,
       timerSeconds: config.timer,
       scoreMultiplier: config.scoreMultiplier,
+      onUpdate: (state) => this.onQuizUpdate(state),
+      onEnd: (result) => this.onQuizEnd(result),
+      onTimeout: (result) => this.processResult(result),
+    });
+  },
+
+  async startDailyChallenge() {
+    const difficulty = 'medium';
+    const config = Storage.getDifficultyConfig(difficulty);
+
+    this.lastCategoryId = null;
+    this.lastCategoryName = 'Daily Challenge';
+    this.lastRenderedIndex = -1;
+
+    QuizGame.destroy();
+    Storage.clearGameState();
+    this.setLandingMode(false);
+    UI.setLoadingMeta({ categoryName: 'Daily Challenge', difficulty });
+    UI.showScreen('loading');
+
+    const { questions, offline, categoryName } = await OpenTDB.fetchDailyQuestion();
+
+    UI.showScreen('quiz');
+    UI.setQuizMeta({ categoryName, difficulty, offline });
+
+    QuizGame.start({
+      questions,
+      categoryId: null,
+      categoryName,
+      offline,
+      difficulty,
+      timerSeconds: config.timer,
+      scoreMultiplier: config.scoreMultiplier,
+      isDaily: true,
       onUpdate: (state) => this.onQuizUpdate(state),
       onEnd: (result) => this.onQuizEnd(result),
       onTimeout: (result) => this.processResult(result),
@@ -169,9 +295,14 @@ const App = {
 
   async processResult(result) {
     if (result.correct) {
-      this.playSound(880, 0.08);
+      const streak = QuizGame.streak;
+      if (streak >= 3 && streak % 3 === 0) {
+        this.playSound(1047, 0.15, 'triangle');
+      } else {
+        this.playSound(880, 0.08, 'sine');
+      }
     } else {
-      this.playSound(220, 0.12);
+      this.playSound(220, 0.12, 'sawtooth');
     }
 
     UI.lockAnswers(result.correctIndex, result.selectedIndex);
@@ -179,8 +310,13 @@ const App = {
     QuizGame.advanceAfterFeedback();
   },
 
-  onQuizEnd({ score, won, lives }) {
+  onQuizEnd({ score, won, lives, answerHistory, maxStreak, achievementsEarned, isDaily }) {
     const best = Storage.setBestScore(score);
+
+    this._lastAnswerHistory = answerHistory;
+    this._lastScore = score;
+    this._lastMaxStreak = maxStreak;
+
     this.refreshMenu();
 
     let title = 'Round Complete';
@@ -193,10 +329,31 @@ const App = {
       message = 'New best score!';
     }
 
-    UI.showGameOver({ title, score, best, message, won });
+    if (isDaily && won) {
+      this.playSound(1047, 0.3, 'triangle');
+      this.updateDailyStreak();
+    }
+
+    if (won) {
+      this.playSound(523, 0.1, 'sine');
+      setTimeout(() => this.playSound(659, 0.1, 'sine'), 100);
+      setTimeout(() => this.playSound(784, 0.15, 'sine'), 200);
+    } else {
+      this.playSound(220, 0.2, 'sawtooth');
+      setTimeout(() => this.playSound(196, 0.3, 'sawtooth'), 150);
+    }
+
+    UI.showGameOver({
+      title,
+      score,
+      best,
+      message,
+      won,
+      achievementsEarned: achievementsEarned || [],
+    });
   },
 
-  playSound(freq, duration) {
+  playSound(freq, duration, type = 'sine') {
     if (!Storage.getSoundEnabled()) return;
 
     try {
@@ -208,6 +365,7 @@ const App = {
       const gain = ctx.createGain();
       osc.connect(gain);
       gain.connect(ctx.destination);
+      osc.type = type;
       osc.frequency.value = freq;
       gain.gain.setValueAtTime(0.15, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);

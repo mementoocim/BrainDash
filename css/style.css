@@ -1646,6 +1646,365 @@ body.body--landing .app {
 }
 
 /* ============================================================
+   CONFETTI CANVAS
+   ============================================================ */
+.confetti-canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  pointer-events: none;
+}
+
+/* ============================================================
+   SHAKE ANIMATION
+   ============================================================ */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+/* ============================================================
+   RESUME BANNER
+   ============================================================ */
+.resume-banner {
+  padding: var(--sp-3) var(--sp-4);
+  margin-bottom: var(--sp-4);
+  background: var(--accent-soft);
+  border: 1px solid rgba(139, 92, 246, 0.25);
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+.resume-text {
+  margin: 0 0 var(--sp-3);
+  color: var(--accent-light);
+  font-size: clamp(0.82rem, 2vw + 0.15rem, 0.95rem);
+  font-weight: 600;
+}
+
+.resume-actions {
+  display: flex;
+  gap: var(--sp-2);
+  justify-content: center;
+}
+
+.btn-sm {
+  min-height: 36px;
+  padding: var(--sp-2) var(--sp-4);
+  font-size: clamp(0.78rem, 1.5vw + 0.15rem, 0.88rem);
+  width: auto;
+}
+
+/* ============================================================
+   DAILY CHALLENGE & ACHIEVEMENTS LINK BUTTONS
+   ============================================================ */
+.btn-daily {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: clamp(44px, 9vw, 52px);
+  padding: var(--sp-3) var(--sp-4);
+  margin-top: var(--sp-3);
+  border: 1px solid var(--amber);
+  border-radius: var(--radius);
+  background: var(--amber-soft);
+  color: var(--amber);
+  font-family: var(--font-body);
+  font-size: clamp(0.88rem, 2vw + 0.2rem, 1rem);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background var(--duration-normal),
+    transform var(--duration-fast) var(--ease-spring),
+    box-shadow var(--duration-normal);
+}
+
+.btn-daily:hover {
+  background: rgba(245, 158, 11, 0.2);
+  box-shadow: var(--shadow-glow-amber);
+}
+
+.btn-daily:active {
+  transform: scale(0.97);
+}
+
+.daily-streak {
+  margin-left: var(--sp-2);
+  font-size: clamp(0.72rem, 1.5vw, 0.82rem);
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+.btn-achievements-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: clamp(40px, 8vw, 48px);
+  padding: var(--sp-2) var(--sp-4);
+  margin-top: var(--sp-2);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: clamp(0.82rem, 1.8vw + 0.15rem, 0.92rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    color var(--duration-fast),
+    border-color var(--duration-fast);
+}
+
+.btn-achievements-link:hover {
+  color: var(--text-primary);
+  border-color: var(--glass-border-hover);
+}
+
+/* ============================================================
+   REVIEW SCREEN
+   ============================================================ */
+.review-card {
+  padding: var(--sp-5);
+  max-height: 90dvh;
+  overflow-y: auto;
+}
+
+.review-title {
+  margin: 0 0 var(--sp-2);
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 4vw + 0.2rem, 1.7rem);
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.review-summary {
+  margin: 0 0 var(--sp-4);
+  font-size: clamp(0.78rem, 1.5vw + 0.15rem, 0.88rem);
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.review-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.review-item {
+  display: flex;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.review-item--correct {
+  border-color: rgba(16, 185, 129, 0.2);
+  background: rgba(16, 185, 129, 0.04);
+}
+
+.review-item--wrong {
+  border-color: rgba(239, 68, 68, 0.2);
+  background: rgba(239, 68, 68, 0.04);
+}
+
+.review-num {
+  flex-shrink: 0;
+  width: clamp(28px, 6vw, 36px);
+  height: clamp(28px, 6vw, 36px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.3);
+  color: var(--text-secondary);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(0.72rem, 1.5vw, 0.82rem);
+}
+
+.review-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.review-question {
+  margin: 0 0 var(--sp-2);
+  font-size: clamp(0.82rem, 2vw + 0.1rem, 0.95rem);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.review-answers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+  margin-bottom: var(--sp-2);
+}
+
+.review-answer {
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--radius-pill);
+  font-size: clamp(0.68rem, 1.2vw + 0.1rem, 0.78rem);
+  font-weight: 500;
+  color: var(--text-tertiary);
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid transparent;
+}
+
+.review-answer--correct {
+  color: var(--success);
+  border-color: rgba(16, 185, 129, 0.3);
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.review-answer--selected {
+  color: var(--danger);
+  border-color: rgba(239, 68, 68, 0.3);
+  background: rgba(239, 68, 68, 0.1);
+  text-decoration: line-through;
+}
+
+.review-meta {
+  margin: 0;
+  font-size: clamp(0.68rem, 1.2vw + 0.1rem, 0.78rem);
+  color: var(--text-tertiary);
+  font-weight: 500;
+}
+
+/* ============================================================
+   ACHIEVEMENTS SCREEN
+   ============================================================ */
+.achievements-card {
+  padding: var(--sp-5);
+  max-height: 90dvh;
+  overflow-y: auto;
+}
+
+.achievements-title {
+  margin: 0 0 var(--sp-4);
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 4vw + 0.2rem, 1.7rem);
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.achievement-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.achievement-item {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--radius);
+  border: 1px solid var(--glass-border);
+  background: rgba(0, 0, 0, 0.15);
+  opacity: 0.5;
+  filter: grayscale(1);
+  transition: opacity var(--duration-normal), filter var(--duration-normal);
+}
+
+.achievement-item--unlocked {
+  opacity: 1;
+  filter: none;
+  border-color: rgba(245, 158, 11, 0.2);
+  background: rgba(245, 158, 11, 0.04);
+}
+
+.achievement-icon {
+  flex-shrink: 0;
+  font-size: clamp(1.4rem, 4vw, 1.8rem);
+  width: clamp(40px, 8vw, 48px);
+  text-align: center;
+}
+
+.achievement-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.achievement-name {
+  font-family: var(--font-display);
+  font-size: clamp(0.82rem, 2vw + 0.1rem, 0.95rem);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.achievement-desc {
+  font-size: clamp(0.72rem, 1.5vw + 0.1rem, 0.82rem);
+  color: var(--text-tertiary);
+  line-height: 1.4;
+}
+
+/* ============================================================
+   ACHIEVEMENT TOAST
+   ============================================================ */
+.achievement-toast {
+  position: fixed;
+  top: var(--sp-4);
+  left: 50%;
+  transform: translateX(-50%) translateY(-120%);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-5);
+  background: var(--bg-elevated);
+  border: 1px solid var(--amber);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-glow-amber), var(--shadow-lg);
+  z-index: 300;
+  opacity: 0;
+  transition:
+    transform 0.4s var(--ease-spring),
+    opacity 0.3s var(--ease-out);
+  pointer-events: none;
+}
+
+.achievement-toast--show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.achievement-toast__icon {
+  font-size: clamp(1.4rem, 4vw, 1.8rem);
+}
+
+.achievement-toast__body {
+  display: flex;
+  flex-direction: column;
+}
+
+.achievement-toast__label {
+  font-size: clamp(0.65rem, 1.2vw, 0.72rem);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--amber);
+}
+
+.achievement-toast__name {
+  font-family: var(--font-display);
+  font-size: clamp(0.88rem, 2vw + 0.15rem, 1rem);
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* ============================================================
    ACCESSIBILITY: REDUCED MOTION
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {
