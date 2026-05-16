@@ -1700,6 +1700,7 @@ body.body--landing .app {
   font-size: clamp(0.82rem, 1.8vw + 0.15rem, 0.92rem);
   width: auto !important;
   border-radius: var(--radius);
+  border: 1px solid var(--glass-border) !important;
 }
 
 /* ============================================================
