@@ -1689,16 +1689,16 @@ body.body--landing .app {
 
 .resume-actions {
   display: flex;
-  gap: var(--sp-2);
+  gap: var(--sp-3);
   justify-content: center;
 }
 
 .btn-sm {
   flex: 1;
   min-height: clamp(40px, 8vw, 48px);
-  padding: var(--sp-2) var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
   font-size: clamp(0.82rem, 1.8vw + 0.15rem, 0.92rem);
-  width: auto;
+  width: auto !important;
   border-radius: var(--radius);
 }
 
